@@ -14,12 +14,15 @@ public static class GamesEndpoints
         new GameDto(5, "Red Dead Redemption 2", "Action", "Red Dead Redemption 2 is a 2018 action-adventure game developed and published by Rockstar Games.", 39.99m, new DateOnly(2018, 10, 26))
     ];
 
-    public static WebApplication MapGamesEndpoints(this WebApplication app){
+    public static RouteGroupBuilder MapGamesEndpoints(this WebApplication app)
+    {
+        var group = app.MapGroup("games");
+
         // GET /games
-        app.MapGet("/games", () => games);
+        group.MapGet("/", () => games);
 
         // GET /games/{id}
-        app.MapGet("/games/{id}", (int id) => {
+        group.MapGet("/{id}", (int id) => {
             GameDto? game = games.Find(g => g.Id == id);
             if (game is null)
             {
@@ -30,7 +33,7 @@ public static class GamesEndpoints
             }).WithName(GetGameEndpointName);
 
         // POST /games
-        app.MapPost("/games", (CreateGameDto newGame) => {
+        group.MapPost("/", (CreateGameDto newGame) => {
             var maxId = games.Max(g => g.Id);
             var game = new GameDto(maxId + 1, newGame.Name, newGame.Genre, newGame.Description, newGame.Price, newGame.ReleaseDate);
             games.Add(game);
@@ -39,7 +42,7 @@ public static class GamesEndpoints
         });
 
         // PUT /games/{id}
-        app.MapPut("games/{id}", (int id, UpdateGameDto updatedGame) => {
+        group.MapPut("/{id}", (int id, UpdateGameDto updatedGame) => {
             var game = games.Find(g => g.Id == id);
             if (game is null)
             {
@@ -60,7 +63,7 @@ public static class GamesEndpoints
         });
 
         // DELETE /games/{id}
-        app.MapDelete("games/{id}", (int id) => {
+        group.MapDelete("/{id}", (int id) => {
             var game = games.Find(g => g.Id == id);
             if (game is null)
             {
@@ -72,6 +75,6 @@ public static class GamesEndpoints
             return Results.NoContent();
         });
 
-        return app;
+        return group;
     }
 }
