@@ -14,4 +14,7 @@ List<GameDto> games = [
 // GET /games
 app.MapGet("/games", () => games);
 
+// GET /games/{id}
+app.MapGet("/games/{id}", (int id) => games.Find(g => g.Id == id));
+
 app.Run();
