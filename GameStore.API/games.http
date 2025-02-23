@@ -2,3 +2,31 @@ GET http://localhost:5086/games
 
 ###
 GET http://localhost:5086/games/1
+
+###
+POST http://localhost:5086/games
+Content-Type: application/json
+
+{
+	"name": "FIFA 25",
+	"genre": "Sports",
+	"description": "FIFA 25 is a football game that allows players to experience a preview of The World’s Game. Players can hit the pitch in Kick-Off with a selection of the world’s biggest clubs, team up with friends online for 5-a-side glory in Clubs Rush, and improve their Pro up to capped level.",
+	"price": "59.99",
+	"releaseDate": "2025-05-18"
+}
+
+###
+PUT http://localhost:5086/games/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "The Witcher 3",
+    "genre": "RPG",
+    "description": "The Witcher 3: Wild Hunt is a story-driven open world RPG set in a visually stunning fantasy universe full of meaningful choices and impactful consequences.",
+    "price": 9.99,
+    "releaseDate": "2015-05-11"
+}
+
+###
+DELETE http://localhost:5086/games/5
