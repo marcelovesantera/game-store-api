@@ -1,1 +1,73 @@
-/.vscode
+# Compiled binary files
+bin/
+obj/
+out/
+
+# User-specific files
+.vscode/
+*.user
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.docstates
+
+# Logs and database files
+logs/
+*.log
+*.ldb
+*.sqlite
+*.sqlite3
+*.db
+*.mdb
+*.mdf
+*.ldf
+
+# Runtime, packages, and build artifacts
+.DS_Store
+node_modules/
+wwwroot/lib/
+dist/
+publish/
+packages/
+TestResults/
+coverage/
+temp/
+*.cache
+*.pid
+
+# ASP.NET & .NET Core
+appsettings.Development.json
+secrets.json
+.env
+.env.local
+
+# Visual Studio and Rider IDE files
+.vscode/
+.idea/
+*.rsuser
+*.dotCover
+*.sln.iml
+
+# NuGet and dependencies
+*.nupkg
+project.lock.json
+global.json
+NuGet.Config
+nuget.exe
+
+# Docker
+docker-compose.override.yml
+docker-compose.*.yml
+.dockerignore
+
+# Git-specific
+.git/
+.gitignore
+.gitkeep
+
+# Resharper and Rider
+*.DotSettings.user
+*.sln.DotSettings
+
+# Azure related
+azure-pipelines.yml
