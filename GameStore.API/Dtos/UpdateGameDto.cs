@@ -11,7 +11,6 @@ public record class UpdateGameDto(
     [StringLength(20)]
     string Genre,
 
-    [Required]
     [StringLength(300)]
     string Description,
 
