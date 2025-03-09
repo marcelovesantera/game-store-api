@@ -60,14 +60,8 @@ public static class GamesEndpoints
         });
 
         // DELETE /games/{id}
-        group.MapDelete("/{id}", (int id) => {
-            var game = games.Find(g => g.Id == id);
-            if (game is null)
-            {
-                return Results.NotFound();
-            }
-
-            games.Remove(game);
+        group.MapDelete("/{id}", (int id, GameStoreContext dbContext) => {
+            dbContext.Games.Where(game => game.Id == id).ExecuteDelete();
 
             return Results.NoContent();
         });
