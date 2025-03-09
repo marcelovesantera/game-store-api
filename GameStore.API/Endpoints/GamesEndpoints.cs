@@ -27,15 +27,10 @@ public static class GamesEndpoints
         // GET /games/{id}
         group.MapGet("/{id}", (int id, GameStoreContext dbContext) => {
             Game? game = dbContext.Games.Find(id);
-            if (game is null)
-            {
-                return Results.NotFound();
-            }
 
-            game.Genre = dbContext.Genres.Find(game.GenreId);
-            
-            return Results.Ok(game);
-            }).WithName(GetGameEndpointName);
+            return game is null ? Results.NotFound() : Results.Ok(game.ToGameDetailsDto());
+        })
+        .WithName(GetGameEndpointName);
 
         // POST /games
         group.MapPost("/", (CreateGameDto newGame, GameStoreContext dbContext) =>
@@ -49,22 +44,12 @@ public static class GamesEndpoints
         });
 
         // PUT /games/{id}
-        group.MapPut("/{id}", (int id, UpdateGameDto updatedGame) => {
-            var game = games.Find(g => g.Id == id);
-            if (game is null)
-            {
-                return Results.NotFound();
-            }
+        group.MapPut("/{id}", (int id, UpdateGameDto updatedGame, GameStoreContext dbContext) => {
+            var existingGame = dbContext.Games.Find(id);
+            if (existingGame is null) return Results.NotFound();
 
-            var index = games.IndexOf(game);
-            games[index] = game with
-            {
-                Name = updatedGame.Name,
-                Genre = updatedGame.Genre,
-                Description = updatedGame.Description,
-                Price = updatedGame.Price,
-                ReleaseDate = updatedGame.ReleaseDate
-            };
+            dbContext.Entry(existingGame).CurrentValues.SetValues(updatedGame.ToEntity(id));
+            dbContext.SaveChanges();
 
             return Results.NoContent();
         });
