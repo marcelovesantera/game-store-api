@@ -2,6 +2,7 @@ using GameStore.API.Data;
 using GameStore.API.Dtos;
 using GameStore.API.Entities;
 using GameStore.API.Mapping;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.API.Endpoints;
 
@@ -22,20 +23,19 @@ public static class GamesEndpoints
         var group = app.MapGroup("games").WithParameterValidation();
 
         // GET /games
-        group.MapGet("/", () => games);
+        group.MapGet("/", (GameStoreContext dbContext) =>
+            dbContext.Games
+                     .Include(game => game.Genre)
+                     .Select(game => game.ToGameSummaryDto())
+                     .AsNoTracking());
 
         // GET /games/{id}
         group.MapGet("/{id}", (int id, GameStoreContext dbContext) => {
             Game? game = dbContext.Games.Find(id);
-            if (game is null)
-            {
-                return Results.NotFound();
-            }
 
-            game.Genre = dbContext.Genres.Find(game.GenreId);
-            
-            return Results.Ok(game);
-            }).WithName(GetGameEndpointName);
+            return game is null ? Results.NotFound() : Results.Ok(game.ToGameDetailsDto());
+        })
+        .WithName(GetGameEndpointName);
 
         // POST /games
         group.MapPost("/", (CreateGameDto newGame, GameStoreContext dbContext) =>
@@ -49,35 +49,19 @@ public static class GamesEndpoints
         });
 
         // PUT /games/{id}
-        group.MapPut("/{id}", (int id, UpdateGameDto updatedGame) => {
-            var game = games.Find(g => g.Id == id);
-            if (game is null)
-            {
-                return Results.NotFound();
-            }
+        group.MapPut("/{id}", (int id, UpdateGameDto updatedGame, GameStoreContext dbContext) => {
+            var existingGame = dbContext.Games.Find(id);
+            if (existingGame is null) return Results.NotFound();
 
-            var index = games.IndexOf(game);
-            games[index] = game with
-            {
-                Name = updatedGame.Name,
-                Genre = updatedGame.Genre,
-                Description = updatedGame.Description,
-                Price = updatedGame.Price,
-                ReleaseDate = updatedGame.ReleaseDate
-            };
+            dbContext.Entry(existingGame).CurrentValues.SetValues(updatedGame.ToEntity(id));
+            dbContext.SaveChanges();
 
             return Results.NoContent();
         });
 
         // DELETE /games/{id}
-        group.MapDelete("/{id}", (int id) => {
-            var game = games.Find(g => g.Id == id);
-            if (game is null)
-            {
-                return Results.NotFound();
-            }
-
-            games.Remove(game);
+        group.MapDelete("/{id}", (int id, GameStoreContext dbContext) => {
+            dbContext.Games.Where(game => game.Id == id).ExecuteDelete();
 
             return Results.NoContent();
         });
