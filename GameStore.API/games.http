@@ -20,7 +20,6 @@ PUT http://localhost:5086/games/1
 Content-Type: application/json
 
 {
-    "id": 1,
     "name": "The Witcher 3",
     "genreId": 1,
     "description": "The Witcher 3: Wild Hunt is a story-driven open world RPG set in a visually stunning fantasy universe full of meaningful choices and impactful consequences.",
