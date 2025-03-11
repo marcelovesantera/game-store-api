@@ -1,6 +1,7 @@
 using GameStore.API.Data;
 using GameStore.API.Dtos;
 using GameStore.API.Entities;
+using GameStore.API.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.API.Endpoints;
@@ -16,7 +17,7 @@ public static class GenresEndpoints
         // GET /genres
         group.MapGet("/", async (GameStoreContext dbContext) => 
             await dbContext.Genres
-                    .Select(genre => genre)
+                    .Select(genre => genre.ToDto())
                     .AsNoTracking()
                     .ToListAsync());
 
@@ -24,18 +25,18 @@ public static class GenresEndpoints
         group.MapGet("/{id}", async (int id, GameStoreContext dbContext) => {
             Genre? genre = await dbContext.Genres.FindAsync(id);
 
-            return genre is null ? Results.NotFound() : Results.Ok(genre);
+            return genre is null ? Results.NotFound() : Results.Ok(genre.ToDto());
         })
         .WithName(GetGenreEndpointName);;
 
         // POST / genres
         group.MapPost("/", async (CreateGenreDto newGenre, GameStoreContext dbContext) => {
-            Genre genre = new Genre{ Name = newGenre.Name };
+            Genre genre = newGenre.ToEntity();
 
             dbContext.Add(genre);
             await dbContext.SaveChangesAsync();
 
-            return Results.CreatedAtRoute(GetGenreEndpointName, new { id = genre.Id }, genre);
+            return Results.CreatedAtRoute(GetGenreEndpointName, new { id = genre.Id }, genre.ToDto());
         });
 
         // PUT /genres/{id}
@@ -43,7 +44,7 @@ public static class GenresEndpoints
             var existingGenre = await dbContext.Genres.FindAsync(id);
             if (existingGenre is null) return Results.NotFound();
 
-            dbContext.Entry(existingGenre).CurrentValues.SetValues(updatedGenre);
+            dbContext.Entry(existingGenre).CurrentValues.SetValues(updatedGenre.ToEntity(id));
             await dbContext.SaveChangesAsync();
 
             return Results.NoContent();

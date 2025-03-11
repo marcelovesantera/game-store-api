@@ -54,7 +54,7 @@ PUT http://localhost:5086/genres/1
 Content-Type: application/json
 
 {
-    "name": "Simulation"
+    "name": "RPG"
 }
 
 ###
