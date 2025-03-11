@@ -1,3 +1,4 @@
+// GAMES ROUTE
 GET http://localhost:5086/games
 
 ###
@@ -29,3 +30,32 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:5086/games/2
+
+
+
+
+// GENRES ROUTE
+###
+GET http://localhost:5086/genres
+
+###
+GET http://localhost:5086/genres/1
+
+###
+POST http://localhost:5086/genres
+Content-Type: application/json
+
+{
+	"name": "Interactive Game"
+}
+
+###
+PUT http://localhost:5086/genres/1
+Content-Type: application/json
+
+{
+    "name": "Simulation"
+}
+
+###
+DELETE http://localhost:5086/genres/2
