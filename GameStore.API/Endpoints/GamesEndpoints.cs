@@ -23,14 +23,14 @@ public static class GamesEndpoints
         var group = app.MapGroup("games").WithParameterValidation();
 
         // GET /games
-        group.MapGet("/", (GameStoreContext dbContext) =>
+        group.MapGet("/games", (GameStoreContext dbContext) =>
             dbContext.Games
                      .Include(game => game.Genre)
                      .Select(game => game.ToGameSummaryDto())
                      .AsNoTracking());
 
         // GET /games/{id}
-        group.MapGet("/{id}", (int id, GameStoreContext dbContext) => {
+        group.MapGet("/games/{id}", (int id, GameStoreContext dbContext) => {
             Game? game = dbContext.Games.Find(id);
 
             return game is null ? Results.NotFound() : Results.Ok(game.ToGameDetailsDto());
@@ -38,7 +38,7 @@ public static class GamesEndpoints
         .WithName(GetGameEndpointName);
 
         // POST /games
-        group.MapPost("/", (CreateGameDto newGame, GameStoreContext dbContext) =>
+        group.MapPost("/games", (CreateGameDto newGame, GameStoreContext dbContext) =>
         {
             Game game = newGame.ToEntity();
 
@@ -49,7 +49,7 @@ public static class GamesEndpoints
         });
 
         // PUT /games/{id}
-        group.MapPut("/{id}", (int id, UpdateGameDto updatedGame, GameStoreContext dbContext) => {
+        group.MapPut("/games/{id}", (int id, UpdateGameDto updatedGame, GameStoreContext dbContext) => {
             var existingGame = dbContext.Games.Find(id);
             if (existingGame is null) return Results.NotFound();
 
@@ -60,7 +60,7 @@ public static class GamesEndpoints
         });
 
         // DELETE /games/{id}
-        group.MapDelete("/{id}", (int id, GameStoreContext dbContext) => {
+        group.MapDelete("/games/{id}", (int id, GameStoreContext dbContext) => {
             dbContext.Games.Where(game => game.Id == id).ExecuteDelete();
 
             return Results.NoContent();
