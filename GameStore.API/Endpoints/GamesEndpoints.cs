@@ -9,7 +9,6 @@ namespace GameStore.API.Endpoints;
 public static class GamesEndpoints
 {
     const string GetGameEndpointName = "GetGame";
-
     
     public static RouteGroupBuilder MapGamesEndpoints(this WebApplication app)
     {
