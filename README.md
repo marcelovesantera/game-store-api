@@ -53,7 +53,7 @@ GameStore.API/
 ### 1. Clonar o Repositório
 
 ```sh
-git clone https://github.com/seu-usuario/GameStore.API.git
+git clone https://github.com/marcelovesantera/GameStore.API.git
 cd GameStore.API
 ```
 
@@ -162,7 +162,7 @@ GameStore.API/
 ### 1. Clone the Repository
 
 ```sh
-git clone https://github.com/your-username/GameStore.API.git
+git clone https://github.com/marcelovesantera/GameStore.API.git
 cd GameStore.API
 ```
 
